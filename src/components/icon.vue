@@ -1,12 +1,15 @@
 <template>
-  <div>
-    <router-view />
-  </div>
+  <i :class="['iconfont', `icon-${icon}`]"></i>
 </template>
 <script>
 export default {
-  name: 'App',
-  props: {},
+  name: 'IconFont',
+  props: {
+    icon: {
+      type: String,
+      required: true
+    }
+  },
   components: {},
   data() {
     return {}
