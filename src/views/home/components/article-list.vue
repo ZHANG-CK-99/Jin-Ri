@@ -22,10 +22,10 @@
         :error.sync="error"
         error-text="出错了，点击重新加载~"
       >
-        <van-cell
-          v-for="(article, index) in list"
+        <article-item
+          :article="item"
+          v-for="(item, index) in list"
           :key="index"
-          :title="article.title"
         />
       </van-list>
     </van-pull-refresh>
@@ -34,9 +34,12 @@
 
 <script>
 import { getArticles } from '@/api/articel'
+import ArticleItem from '@/components/article-item'
 export default {
   name: 'ArticleList',
-  components: {},
+  components: {
+    ArticleItem
+  },
   props: {
     channel: {
       type: Object,
@@ -104,4 +107,9 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.article-list {
+  height: 79vh;
+  overflow: auto;
+}
+</style>

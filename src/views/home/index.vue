@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar">
+    <van-nav-bar class="page-nav-bar" fixed>
       <van-button
         class="search-btn"
         slot="title"
@@ -18,7 +18,7 @@
         <!-- 频道文章列表 -->
         <article-list :channel="item"></article-list>
         <!-- /频道文章列表 -->
-        </van-tab>
+      </van-tab>
       <template #nav-right>
         <div class="placeholder"></div>
         <div class="hamburger-btn">
@@ -71,7 +71,6 @@ export default {
   padding-top: 174px;
   padding-bottom: 100px;
   .page-nav-bar {
-    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -106,10 +105,11 @@ export default {
     .van-tabs__wrap {
       position: fixed;
       top: 92px;
-      z-index: 1;
+      z-index: 2;
       left: 0;
       right: 0;
       height: 82px;
+      width: 100%;
     }
     .van-tab {
       border-right: 1px solid #edeff3;
