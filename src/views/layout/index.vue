@@ -9,7 +9,7 @@
       route: 开启路由模式
      -->
     <van-tabbar class="layout-tabbar" route>
-      <van-tabbar-item to="/">
+      <van-tabbar-item to="/home">
         <i slot="icon" class="iconfont icon-shouye"></i>
         <span class="text">首页</span>
       </van-tabbar-item>

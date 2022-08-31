@@ -13,7 +13,7 @@
       >
     </van-nav-bar>
     <!-- /导航栏 -->
-    <van-tabs class="channel-tabs" animated swipeable>
+    <van-tabs class="channel-tabs" v-model="active" animated swipeable>
       <van-tab v-for="item in channels" :key="item.id" :title="item.name">
         <!-- 频道文章列表 -->
         <article-list :channel="item"></article-list>
@@ -21,26 +21,43 @@
       </van-tab>
       <template #nav-right>
         <div class="placeholder"></div>
-        <div class="hamburger-btn">
+        <div class="hamburger-btn" @click="isChannelEditShow = true">
           <!-- <i class="iconfont icon-gengduo"></i> -->
           <!-- 可以封装一个全局组件 -->
           <selfIcon icon="gengduo"></selfIcon>
         </div>
       </template>
     </van-tabs>
+    <!-- 弹出层 -->
+    <!-- 频道编辑 -->
+    <van-popup
+      class="edit-channel-popup"
+      v-model="isChannelEditShow"
+      position="bottom"
+      :style="{ height: '100%' }"
+      closeable
+      close-icon-position="top-left"
+    >
+      <channel-edit :active="active" :myChannels="channels"></channel-edit>
+    </van-popup>
+    <!-- /频道编辑 -->
+    <!-- /弹出层 -->
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list.vue'
+import ChannelEdit from '@/views/home/components/channel-edit.vue'
 export default {
   name: 'HomeIndex',
-  components: { ArticleList },
+  components: { ArticleList, ChannelEdit },
   props: {},
   data() {
     return {
-      channels: []
+      channels: [],
+      isChannelEditShow: true, // 这里我们先设置为 true 就能看到弹窗的页面了
+      active: 0
     }
   },
   computed: {},
@@ -149,6 +166,10 @@ export default {
       //   background-size: contain;
       // }
     }
+  }
+  .edit-channel-popup {
+    padding-top: 100px;
+    box-sizing: border-box;
   }
 }
 </style>
