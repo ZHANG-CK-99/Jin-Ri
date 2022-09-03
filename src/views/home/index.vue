@@ -38,7 +38,11 @@
       closeable
       close-icon-position="top-left"
     >
-      <channel-edit :active="active" :myChannels="channels"></channel-edit>
+      <channel-edit
+        @closeEditShow="isChannelEditShow = $event"
+        :active.sync="active"
+        :myChannels="channels"
+      ></channel-edit>
     </van-popup>
     <!-- /频道编辑 -->
     <!-- /弹出层 -->

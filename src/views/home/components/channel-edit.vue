@@ -1,14 +1,21 @@
 <template>
   <div class="channel-edit">
     <van-cell title="我的频道" :border="false">
-      <van-button class="edit-text" size="mini" round type="danger" plain
-        >编辑</van-button
+      <van-button
+        class="edit-text"
+        size="mini"
+        round
+        type="danger"
+        plain
+        @click="isEditShow = !isEditShow"
+        >{{ isEditShow ? '完成' : '编辑' }}</van-button
       >
     </van-cell>
     <van-grid :gutter="10">
       <van-grid-item
         class="channel-item"
         v-for="(channelItem, index) in myChannels"
+        @click="onMyChannelClick(channelItem, index)"
         :key="index"
         icon="close"
       >
@@ -48,7 +55,8 @@ export default {
   },
   data() {
     return {
-      allChannels: []
+      allChannels: [],
+      isEditShow: false // 控制编辑状态
     }
   },
   computed: {
@@ -76,6 +84,26 @@ export default {
     },
     onAddChannel(channel) {
       this.myChannels.push(channel)
+    },
+    onMyChannelClick(channelItem, index) {
+      // 判断是否处于编辑状态
+      if (this.isEditShow) {
+        // 编辑状态
+        // 判断当前删除的是否是推荐频道
+        if (index === 0) {
+          return this.$toast('推荐频道不可删除哦')
+        }
+
+        if (index <= this.active) {
+          this.$emit('update:active', this.active - 1)
+        }
+        this.myChannels.splice(index, 1)
+      } else {
+        // 非编辑状态
+        // 同步更新active的状态
+        this.$emit('update:active', index)
+        this.$emit('closeEditShow', false)
+      }
     }
   }
 }
