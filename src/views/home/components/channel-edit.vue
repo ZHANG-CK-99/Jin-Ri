@@ -21,16 +21,18 @@
     <van-grid class="recommend-grid" :gutter="10">
       <van-grid-item
         class="channel-item"
-        v-for="value in 8"
-        :key="value"
-        text="文字"
+        v-for="channel in recommendChannels"
+        :key="channel.id"
+        :text="channel.name"
         icon="plus"
+        @click="onAddChannel(channel)"
       />
     </van-grid>
   </div>
 </template>
 
 <script>
+import { getAllChannels } from '@/api/articel'
 export default {
   name: 'ChannelEdit',
   components: {},
@@ -45,13 +47,37 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      allChannels: []
+    }
   },
-  computed: {},
+  computed: {
+    recommendChannels() {
+      return this.allChannels.filter((item) => {
+        return !this.myChannels.some((myItem) => item.id === myItem.id)
+      })
+    }
+  },
   watch: {},
-  created() {},
+  created() {
+    this.loadAllChannels()
+  },
   mounted() {},
-  methods: {}
+  methods: {
+    async loadAllChannels() {
+      try {
+        const {
+          data: { data }
+        } = await getAllChannels()
+        this.allChannels = data.channels
+      } catch (err) {
+        this.$toast('获取频道数据列表失败')
+      }
+    },
+    onAddChannel(channel) {
+      this.myChannels.push(channel)
+    }
+  }
 }
 </script>
 
