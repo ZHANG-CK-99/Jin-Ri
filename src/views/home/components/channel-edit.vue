@@ -7,7 +7,7 @@
         round
         type="danger"
         plain
-        @click="isEditShow = !isEditShow"
+        @click="updateEditShow"
         >{{ isEditShow ? '完成' : '编辑' }}</van-button
       >
     </van-cell>
@@ -17,7 +17,7 @@
         v-for="(channelItem, index) in myChannels"
         @click="onMyChannelClick(channelItem, index)"
         :key="index"
-        icon="close"
+        :icon="icon"
       >
         <span class="text" :class="{ active: active === index }" slot="text">{{
           channelItem.name
@@ -39,7 +39,13 @@
 </template>
 
 <script>
-import { getAllChannels } from '@/api/articel'
+import {
+  getAllChannels,
+  addUserChannel,
+  deleteUserChannel
+} from '@/api/articel'
+import { mapState } from 'vuex'
+import { setItem } from '@/utils/storage.js'
 export default {
   name: 'ChannelEdit',
   components: {},
@@ -56,7 +62,8 @@ export default {
   data() {
     return {
       allChannels: [],
-      isEditShow: false // 控制编辑状态
+      isEditShow: false, // 控制编辑状态
+      icon: ''
     }
   },
   computed: {
@@ -64,7 +71,8 @@ export default {
       return this.allChannels.filter((item) => {
         return !this.myChannels.some((myItem) => item.id === myItem.id)
       })
-    }
+    },
+    ...mapState(['user'])
   },
   watch: {},
   created() {
@@ -82,8 +90,24 @@ export default {
         this.$toast('获取频道数据列表失败')
       }
     },
-    onAddChannel(channel) {
+    async onAddChannel(channel) {
       this.myChannels.push(channel)
+      // 判断是否登录
+      if (this.user) {
+        // 已登录
+        try {
+          await addUserChannel({
+            id: channel.id,
+            seq: this.myChannels.length
+          })
+          this.$toast('添加成功')
+        } catch (err) {
+          this.$toast('添加失败')
+        }
+      } else {
+        // 未登录
+        setItem('TOUTIAO_CHANNELS', this.myChannels)
+      }
     },
     onMyChannelClick(channelItem, index) {
       // 判断是否处于编辑状态
@@ -98,11 +122,29 @@ export default {
           this.$emit('update:active', this.active - 1)
         }
         this.myChannels.splice(index, 1)
+        this.deleteChannel(channelItem)
       } else {
         // 非编辑状态
         // 同步更新active的状态
         this.$emit('update:active', index)
         this.$emit('closeEditShow', false)
+      }
+    },
+    updateEditShow() {
+      this.isEditShow = !this.isEditShow
+      this.isEditShow ? (this.icon = 'close') : (this.icon = '')
+    },
+    async deleteChannel(channel) {
+      try {
+        if (this.user) {
+          // 已登录将数据存储到线上
+          await deleteUserChannel(channel.id)
+        } else {
+          // 未登录存储到本地
+          setItem('TOUTIAO_CHANNELS', this.myChannels)
+        }
+      } catch (err) {
+        this.$toast('删除失败,请稍后重试')
       }
     }
   }

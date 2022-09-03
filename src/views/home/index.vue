@@ -53,6 +53,8 @@
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list.vue'
 import ChannelEdit from '@/views/home/components/channel-edit.vue'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'HomeIndex',
   components: { ArticleList, ChannelEdit },
@@ -64,7 +66,9 @@ export default {
       active: 0
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
   watch: {},
   created() {
     this.loadChannels()
@@ -73,12 +77,30 @@ export default {
   methods: {
     async loadChannels() {
       try {
-        const {
-          data: {
-            data: { channels }
+        let newchannels = []
+        if (this.user) {
+          // 如果已登录
+          const {
+            data: {
+              data: { channels }
+            }
+          } = await getUserChannels()
+          this.channels = channels
+        } else {
+          // 未登录，判断是否有本地的频道列表数据
+          const loadChannels = getItem('TOUTIAO_CHANNELS')
+          if (loadChannels) {
+            newchannels = loadChannels
+          } else {
+            const {
+              data: {
+                data: { channels }
+              }
+            } = await getUserChannels()
+            this.channels = channels
           }
-        } = await getUserChannels()
-        this.channels = channels
+          this.channels = newchannels
+        }
       } catch (err) {
         this.$toast('获取数据失败')
       }
