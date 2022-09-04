@@ -12,12 +12,12 @@
         @focus="isResultShow = false"
       />
     </form>
-    <!-- 历史记录 -->
+    <!-- 搜索结果 -->
     <search-result v-if="isResultShow" />
-    <!-- /历史记录 -->
+    <!-- /搜素结果 -->
 
     <!-- 联想建议 -->
-    <search-suggestion v-else-if="searchText" />
+    <search-suggestion v-else-if="searchText" :searchText="searchText" />
     <!-- /联想建议 -->
 
     <!-- 搜索历史记录 -->
