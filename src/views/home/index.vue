@@ -9,6 +9,7 @@
         size="small"
         round
         icon="search"
+        to="/search"
         >搜索</van-button
       >
     </van-nav-bar>
@@ -62,7 +63,7 @@ export default {
   data() {
     return {
       channels: [],
-      isChannelEditShow: true, // 这里我们先设置为 true 就能看到弹窗的页面了
+      isChannelEditShow: false, // 这里我们先设置为 true 就能看到弹窗的页面了
       active: 0
     }
   },
