@@ -1,21 +1,20 @@
 <template>
   <div class="search-history">
     <van-cell title="搜索历史">
-      <span>全部删除</span>
-      <span>完成</span>
-      <van-icon name="delete" />
+      <div v-if="isDeleteShow">
+        <span @click="$emit('update:searchHistory', [])">全部删除</span>
+        &nbsp;
+        <span @click="isDeleteShow = false">完成</span>
+      </div>
+      <van-icon name="delete" v-else @click="isDeleteShow = true" />
     </van-cell>
-    <van-cell title="hello">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="hello">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="hello">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="hello">
-      <van-icon name="close" />
+    <van-cell
+      v-for="(item, index) in searchHistory"
+      :key="index"
+      :title="item"
+      @click="onSearch(item)"
+    >
+      <van-icon name="close" @click="searchHistory.splice(index, 1)" />
     </van-cell>
   </div>
 </template>
@@ -24,15 +23,26 @@
 export default {
   name: 'SearchHistory',
   components: {},
-  props: {},
+  props: {
+    searchHistory: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
-    return {}
+    return {
+      isDeleteShow: false
+    }
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    onSearch(item) {
+      this.$emit('search', item)
+    }
+  }
 }
 </script>
 

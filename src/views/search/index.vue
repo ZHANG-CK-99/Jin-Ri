@@ -26,7 +26,11 @@
       <!-- /联想建议 -->
 
       <!-- 搜索历史记录 -->
-      <search-history v-else />
+      <search-history
+        @search="onSearch"
+        v-else
+        :searchHistory.sync="searchHistory"
+      />
       <!-- /搜索历史记录 -->
     </div>
   </div>
@@ -36,6 +40,7 @@
 import SearchHistory from './components/search-history'
 import SearchSuggestion from './components/search-suggestion'
 import SearchResult from './components/search-result'
+import { setItem, getItem } from '@/utils/storage'
 export default {
   name: 'SearchPage',
   components: {
@@ -47,19 +52,34 @@ export default {
   data() {
     return {
       searchText: '',
-      isResultShow: false
+      isResultShow: false,
+      searchHistory: getItem('search-history') || []
     }
   },
   computed: {},
-  watch: {},
+  watch: {
+    searchHistory: 'searchHistorys'
+  },
   created() {},
   methods: {
     onSearch(val) {
       this.searchText = val
+      // 存储搜索历史记录
+      // 不要有重复的数据
+      const index = this.searchHistory.indexOf(val)
+      // 判断
+      if (index !== -1) {
+        this.searchHistory.splice(index, 1)
+      }
+      this.searchHistory.unshift(val)
       this.isResultShow = true
     },
     onCancel() {
       this.$toast('取消')
+    },
+    searchHistorys(val) {
+      // 同步到本地
+      setItem('search-history', val)
     }
   }
 }
