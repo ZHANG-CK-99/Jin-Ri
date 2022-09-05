@@ -5,6 +5,7 @@
       :key="index"
       :title="item"
       icon="search"
+      @click="$emit('search', item)"
     >
       <template #title>
         <span v-html="hightlightText(item)"></span>

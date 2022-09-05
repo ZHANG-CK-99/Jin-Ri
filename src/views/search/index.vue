@@ -12,17 +12,23 @@
         @focus="isResultShow = false"
       />
     </form>
-    <!-- 搜索结果 -->
-    <search-result v-if="isResultShow" />
-    <!-- /搜素结果 -->
+    <div class="context">
+      <!-- 搜索结果 -->
+      <search-result v-if="isResultShow" :searchText="searchText" />
+      <!-- /搜素结果 -->
 
-    <!-- 联想建议 -->
-    <search-suggestion v-else-if="searchText" :searchText="searchText" />
-    <!-- /联想建议 -->
+      <!-- 联想建议 -->
+      <search-suggestion
+        @search="onSearch"
+        v-else-if="searchText"
+        :searchText="searchText"
+      />
+      <!-- /联想建议 -->
 
-    <!-- 搜索历史记录 -->
-    <search-history v-else />
-    <!-- /搜索历史记录 -->
+      <!-- 搜索历史记录 -->
+      <search-history v-else />
+      <!-- /搜索历史记录 -->
+    </div>
   </div>
 </template>
 
@@ -49,6 +55,7 @@ export default {
   created() {},
   methods: {
     onSearch(val) {
+      this.searchText = val
       this.isResultShow = true
     },
     onCancel() {
@@ -60,6 +67,18 @@ export default {
 
 <style scoped lang="less">
 .search-container {
+  padding-top: 108px;
+  .van-search {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+  }
+  .context {
+    height: calc(100vh - 108px);
+    overflow: auto;
+  }
   .van-search__action {
     color: #fff;
   }
